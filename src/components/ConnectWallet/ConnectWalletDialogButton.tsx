@@ -1,5 +1,5 @@
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import { Button } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 
 import type { SxProps } from '@mui/material'
 
@@ -21,18 +21,36 @@ const ConnectWalletDialogButton: React.FC<Props> = ({
   return (
     <Button
       variant="outlined"
-      className="w-full justify-between p-4"
       onClick={onClick}
+      fullWidth
+      sx={{
+        p: 2,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        ...sx,
+      }}
     >
-      <div className="flex items-center">
-        <div className="rounded-full bg-white p-3">
-          <img src={imgSrc} alt={title} width={48} height={48} />
-        </div>
-        <div className="ml-4 text-left capitalize text-white">
-          <div className="text-lg font-bold">{title}</div>
-          <div className="text-base font-normal">{subtitle}</div>
-        </div>
-      </div>
+      <Box display="flex" alignItems="center">
+        <Box
+          sx={{
+            borderRadius: '50%',
+            bgcolor: 'white',
+            p: 1.5,
+            mr: 2,
+          }}
+        >
+          <img src={imgSrc} alt={title} width={32} height={32} />
+        </Box>
+        <Box textAlign="left">
+          <Typography variant="h6" component="div">
+            {title}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {subtitle}
+          </Typography>
+        </Box>
+      </Box>
       <ChevronRightIcon />
     </Button>
   )

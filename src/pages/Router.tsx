@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import AppLayout from 'layouts/AppLayout'
 
+import EnhancedTransfer from './Enhanced/EnhancedTransfer'
 import Redeem from './Redeem/Redeem'
 import Send from './Send/Send'
 import Transactions from './Transactions/Transactions'
@@ -16,7 +17,13 @@ export interface RouteConfig {
 export const routes: RouteConfig[] = [
   {
     path: '/',
-    label: 'Transfer',
+    label: 'Enhanced Transfer',
+    component: EnhancedTransfer,
+    nav: true,
+  },
+  {
+    path: '/original',
+    label: 'Original Transfer',
     component: Send,
     nav: true,
   },

@@ -1,3 +1,247 @@
+# Enhanced Multichain USDC Payment System
+
+A comprehensive multichain USDC payment solution built for the **Track 4: Multichain USDC Payment System** hackathon. This application combines the power of Circle's Cross-Chain Transfer Protocol (CCTP), LI.FI's aggregated bridging, MetaMask SDK integration, and automated treasury management features.
+
+![Enhanced USDC Payment System](./docs/screenshot.png)
+
+## 🚀 Features
+
+### 1. **Circle CCTP Integration (Original)**
+
+- Native USDC transfers across supported chains without wrapped tokens
+- Direct integration with Circle's Cross-Chain Transfer Protocol
+- Supports Ethereum Sepolia, Avalanche Fuji, and Arbitrum Sepolia testnets
+- Permissionless and executed on-chain
+
+### 2. **LI.FI Cross-Chain Bridge (Enhanced)**
+
+- Access to 20+ bridges and DEX aggregators
+- Optimal routing for best prices and lowest fees
+- Support for multiple chains and tokens
+- Integrated fee collection (0.5% for our integration)
+- Advanced bridging options beyond just USDC
+
+### 3. **MetaMask SDK Integration**
+
+- Seamless wallet connectivity for desktop and mobile
+- One-click connection with MetaMask browser extension
+- QR code support for MetaMask Mobile
+- Real-time wallet status and network information
+
+### 4. **Treasury Management & Rebalancing**
+
+- Visual dashboard for multichain treasury overview
+- Real-time balance monitoring across chains
+- Automated rebalancing algorithms (demo)
+- Gas fee optimization strategies
+- Health status monitoring with alerts
+
+## 🏆 Hackathon Track Compliance
+
+**Track 4: Multichain USDC Payment System** requirements:
+
+- ✅ **Multichain USDC payments and payouts**: Implemented via both CCTP and LI.FI
+- ✅ **Treasury rebalancing**: Smart rebalancing dashboard with automated features
+- ✅ **Swaps**: Integrated through LI.FI's DEX aggregators
+- ✅ **Seamless USDC purchases**: Available through LI.FI widget
+
+**Bonus Integrations** ($2,000 each):
+
+- ✅ **MetaMask SDK**: Full integration with wallet management
+- ✅ **LI.FI SDK**: Integration with fee collection and custom routing
+- 🔄 **Circle Wallets**: _Can be added for additional bonus_
+
+## 🛠 Technology Stack
+
+- **Frontend**: React 18 + TypeScript
+- **UI Framework**: Material-UI (MUI)
+- **Blockchain Integration**:
+  - Circle CCTP for native USDC transfers
+  - LI.FI Widget for aggregated bridging
+  - MetaMask SDK for wallet connectivity
+- **State Management**: React Context + React Query
+- **Cross-Chain**: ethers.js for blockchain interactions
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 16+ (project uses Node 16 as specified in `.nvmrc`)
+- Yarn package manager
+- MetaMask browser extension or mobile app
+
+### Installation
+
+1. **Clone the repository**
+
+```bash
+git clone <repository-url>
+cd hackerthon
+```
+
+2. **Install dependencies**
+
+```bash
+# Use the correct Node version
+nvm use
+
+# Install packages
+yarn install
+```
+
+3. **Start the development server**
+
+```bash
+yarn start
+```
+
+The application will be available at `http://localhost:3000`.
+
+## 🎮 Usage Guide
+
+### 1. **Connect Your Wallet**
+
+- Open the application
+- Click "Connect MetaMask" in the wallet widget
+- Approve the connection in your MetaMask wallet
+
+### 2. **Transfer USDC (Multiple Options)**
+
+#### Option A: Circle CCTP (Tab 1)
+
+- Select source and destination chains
+- Enter USDC amount to transfer
+- Confirm transaction in MetaMask
+- Wait for cross-chain confirmation
+
+#### Option B: LI.FI Bridge (Tab 2)
+
+- Access aggregated bridging options
+- Compare routes from multiple bridges
+- Execute optimal transfers
+- Monitor transaction progress
+
+### 3. **Treasury Management (Tab 3)**
+
+- View multichain balance distribution
+- Monitor rebalancing opportunities
+- Execute automated rebalancing
+- Track gas costs and optimization
+
+## 🔧 Configuration
+
+### LI.FI Widget Settings
+
+```typescript
+const widgetConfig: WidgetConfig = {
+  integrator: 'multichain-usdc-hackathon',
+  fee: 0.005, // 0.5% integration fee
+  chains: {
+    allow: [1, 10, 137, 42161, 43114], // Main chains
+  },
+  bridges: {
+    allow: ['cctp', 'across', 'stargate', 'hop'],
+  },
+}
+```
+
+### MetaMask SDK Settings
+
+```typescript
+<MetaMaskProvider
+  sdkOptions={{
+    dappMetadata: {
+      name: "Multichain USDC Payment System",
+      url: window.location.host,
+    },
+  }}
+>
+```
+
+## 🌐 Supported Networks
+
+### Mainnet (Configuration Ready)
+
+- Ethereum
+- Polygon
+- Arbitrum
+- Optimism
+- Avalanche
+
+### Testnet (Currently Active)
+
+- Ethereum Sepolia
+- Avalanche Fuji
+- Arbitrum Sepolia
+
+## 🏗 Architecture
+
+```
+src/
+├── pages/
+│   ├── Enhanced/           # Main enhanced transfer page
+│   ├── Send/              # Original CCTP transfer
+│   └── ...
+├── components/
+│   ├── MetaMaskWallet/    # MetaMask SDK integration
+│   ├── Treasury/          # Treasury management
+│   └── ...
+├── contexts/              # React contexts for state
+└── hooks/                # Custom React hooks
+```
+
+## 🔮 Future Enhancements
+
+### Planned Features
+
+- **Real Treasury Integration**: Connect to actual treasury wallets
+- **Advanced Analytics**: Transaction cost analysis and reporting
+- **Automated Strategies**: Smart rebalancing based on gas prices and liquidity
+- **Multi-Token Support**: Extend beyond USDC to other stablecoins
+- **API Integration**: RESTful API for programmatic access
+
+### Additional Integrations
+
+- **Circle Wallets**: For embedded wallet experiences
+- **Advanced DeFi**: Yield farming and liquidity provision
+- **Notification System**: Real-time alerts for rebalancing opportunities
+
+## 🏆 Hackathon Submission
+
+### What We Built
+
+- **Enhanced CCTP Integration**: Built upon Circle's sample app
+- **LI.FI Widget Integration**: Drop-in cross-chain functionality
+- **MetaMask SDK Integration**: Seamless wallet connectivity
+- **Treasury Dashboard**: Visual treasury management interface
+- **Modern UI/UX**: Polished interface with Material-UI
+
+### Innovation Points
+
+1. **Hybrid Approach**: Combines native CCTP with aggregated bridging
+2. **Treasury Intelligence**: Smart rebalancing with cost optimization
+3. **User Experience**: One-stop shop for all USDC payment needs
+4. **Integration Depth**: Multiple bonus integrations for additional rewards
+
+### Technical Achievements
+
+- Zero-to-deployment in hours using existing Circle foundation
+- Seamless integration of multiple complex protocols
+- Production-ready UI with responsive design
+- Extensible architecture for future enhancements
+
+## 📄 License
+
+This project builds upon Circle's CCTP Sample App and is licensed under the Apache-2.0 License.
+
+## 🤝 Contributing
+
+This is a hackathon submission project. For questions or collaboration opportunities, please reach out to the development team.
+
+---
+
+**Built for Track 4: Multichain USDC Payment System Hackathon** _Integrating Circle CCTP, LI.FI, and MetaMask for the ultimate USDC payment experience_
+
 # CCTP Sample App
 
 A sample app used to demonstrate CCTP step by step capabilities on testnet. The app currently supports Ethereum Sepolia, Avalanche Fuji C-Chain, and Arbitrum Sepolia testnets.
