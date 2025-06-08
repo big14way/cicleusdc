@@ -6,7 +6,6 @@ import {
   createConfig,
   getChains,
   getQuote,
-  getStatus,
 } from '@lifi/sdk'
 import ApiIcon from '@mui/icons-material/Api'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
@@ -53,6 +52,7 @@ interface LiFiChain {
 }
 
 interface LiFiQuote {
+  id?: string
   action?: {
     fromChainId?: number
     toChainId?: number
@@ -245,29 +245,34 @@ const LiFiWidgetComponent: React.FC = () => {
     }
   }
 
-  const testStatus = async () => {
+  const testStatus = () => {
     if (quote == null) return
 
-    try {
-      setConfigStatus('Testing status API...')
+    setConfigStatus(`
+📋 getStatus() API Demo Information:
 
-      // Test the status API - another SDK function
-      const status = await getStatus({
-        bridge: 'lifi',
-        fromChain: quote.action?.fromChainId ?? fromChain,
-        toChain: quote.action?.toChainId ?? toChain,
-        txHash:
-          '0x1234567890123456789012345678901234567890123456789012345678901234',
-      })
+The getStatus() API requires a real transaction hash from an executed transaction.
 
-      setConfigStatus('Status API test successful')
-      // eslint-disable-next-line no-console
-      console.log('Status API response:', status)
-    } catch (error) {
-      setConfigStatus(
-        'Status API test completed (expected error for example hash)'
-      )
-    }
+To use it properly in a real application:
+
+1. Execute a route: const result = await executeRoute(route)
+2. Get the real transaction hash from execution
+3. Track status: getStatus({ txHash: realTxHash, fromChain: ${
+      quote.action?.fromChainId ?? fromChain
+    }, toChain: ${quote.action?.toChainId ?? toChain}, bridge: '${
+      quote.tool ?? 'lifi'
+    }' })
+
+For safety, this demo doesn't execute actual transactions.
+    `)
+
+    // eslint-disable-next-line no-console
+    console.log('📋 getStatus() API Demo - Required parameters:', {
+      fromChain: quote.action?.fromChainId ?? fromChain,
+      toChain: quote.action?.toChainId ?? toChain,
+      bridge: quote.tool ?? 'lifi',
+      note: 'Replace with real txHash from executeRoute() for actual tracking',
+    })
   }
 
   const handleOpenLiFi = () => {
@@ -534,7 +539,7 @@ const LiFiWidgetComponent: React.FC = () => {
                 startIcon={<ApiIcon />}
                 sx={{ mb: 2 }}
               >
-                Test getStatus() API
+                📋 Learn about getStatus() API
               </Button>
             )}
           </Box>
@@ -542,46 +547,80 @@ const LiFiWidgetComponent: React.FC = () => {
           {quote != null && (
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" gutterBottom>
-                Quote Results (via LI.FI SDK APIs)
+                🎯 Quote Results (via LI.FI SDK APIs)
               </Typography>
-              <Card variant="outlined" sx={{ p: 2 }}>
-                <Typography variant="body2">
-                  <strong>Route:</strong>{' '}
-                  {getChainName(quote.action?.fromChainId ?? fromChain)} →{' '}
-                  {getChainName(quote.action?.toChainId ?? toChain)}
-                </Typography>
-                <Typography variant="body2">
-                  <strong>Amount:</strong>{' '}
-                  {(
-                    parseInt(quote.action?.fromAmount ?? '0', 10) / 1e6
-                  ).toFixed(2)}{' '}
-                  →{' '}
-                  {(
-                    parseInt(quote.estimate?.toAmount ?? '0', 10) / 1e6
-                  ).toFixed(2)}{' '}
-                  USDC
-                </Typography>
-                <Typography variant="body2">
-                  <strong>Bridge:</strong> {quote.tool ?? 'Unknown'}
-                  {(quote.tool === 'cctp' ||
-                    Boolean(
-                      quote.steps?.some((step) =>
-                        step.tool?.toLowerCase().includes('cctp')
-                      )
-                    )) && (
-                    <Chip
-                      label="Circle CCTP V2"
-                      color="primary"
-                      size="small"
-                      sx={{ ml: 1 }}
-                    />
+              <Card variant="outlined" sx={{ p: 2, bgcolor: 'success.50' }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Typography
+                      variant="body2"
+                      color="success.main"
+                      sx={{ fontWeight: 'bold' }}
+                    >
+                      ✅ Quote received successfully!
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="body2">
+                      <strong>Route:</strong>{' '}
+                      {getChainName(quote.action?.fromChainId ?? fromChain)} →{' '}
+                      {getChainName(quote.action?.toChainId ?? toChain)}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="body2">
+                      <strong>Amount:</strong>{' '}
+                      {(
+                        parseInt(quote.action?.fromAmount ?? '0', 10) / 1e6
+                      ).toFixed(2)}{' '}
+                      USDC →{' '}
+                      {(
+                        parseInt(quote.estimate?.toAmount ?? '0', 10) / 1e6
+                      ).toFixed(2)}{' '}
+                      USDC
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="body2">
+                      <strong>Bridge:</strong> {quote.tool ?? 'Unknown'}
+                      {(quote.tool === 'cctp' ||
+                        Boolean(
+                          quote.steps?.some((step) =>
+                            step.tool?.toLowerCase().includes('cctp')
+                          )
+                        )) && (
+                        <Chip
+                          label="Circle CCTP V2"
+                          color="primary"
+                          size="small"
+                          sx={{ ml: 1 }}
+                        />
+                      )}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="body2">
+                      <strong>Estimated Duration:</strong> ~
+                      {Math.round(
+                        (quote.estimate?.executionDuration ?? 0) / 60
+                      )}{' '}
+                      minutes
+                    </Typography>
+                  </Grid>
+                  {quote.includedSteps && quote.includedSteps.length > 0 && (
+                    <Grid item xs={12}>
+                      <Typography variant="body2">
+                        <strong>Transaction Steps:</strong>{' '}
+                        {quote.includedSteps.length} step(s) required
+                      </Typography>
+                    </Grid>
                   )}
-                </Typography>
-                <Typography variant="body2">
-                  <strong>Duration:</strong> ~
-                  {Math.round((quote.estimate?.executionDuration ?? 0) / 60)}{' '}
-                  minutes
-                </Typography>
+                  <Grid item xs={12}>
+                    <Typography variant="caption" color="text.secondary">
+                      Quote ID: {quote.id ?? 'N/A'}
+                    </Typography>
+                  </Grid>
+                </Grid>
               </Card>
             </Box>
           )}
