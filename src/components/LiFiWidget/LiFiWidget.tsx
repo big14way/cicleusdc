@@ -1,12 +1,7 @@
 import type React from 'react'
 import { useEffect, useState } from 'react'
 
-import {
-  ChainId,
-  createConfig,
-  getChains,
-  getQuote,
-} from '@lifi/sdk'
+import { ChainId, createConfig, getChains, getQuote } from '@lifi/sdk'
 import ApiIcon from '@mui/icons-material/Api'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CloseIcon from '@mui/icons-material/Close'
