@@ -1,7 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
 
-import classnames from 'classnames'
-
 import logo from 'assets/logo.svg'
 import ConnectWallet from 'components/ConnectWallet/ConnectWallet'
 import { routes } from 'pages/Router'
@@ -18,11 +16,11 @@ function NavLink({ route }: NavLinkProps) {
 
   return (
     <Link
-      className={classnames('mr-12 font-semibold', {
-        'text-gumdrop-500': isSelected,
-        'text-licorice-200 hover:text-gumdrop-200 focus:text-gumdrop-200':
-          !isSelected,
-      })}
+      className={`mr-12 font-semibold ${
+        isSelected
+          ? 'text-gumdrop-500'
+          : 'text-licorice-200 hover:text-gumdrop-200 focus:text-gumdrop-200'
+      }`}
       to={route.path}
     >
       {route.label}
@@ -36,7 +34,7 @@ function Nav() {
       <Link className="flex flex-row items-center" to="/">
         <img className="inline h-12" src={logo} alt="logo" />
         <span className="ml-4 text-2xl font-semibold text-white">
-          Cross-Chain Transfer Protocol
+          Global USDC Remittance Platform
         </span>
       </Link>
 
