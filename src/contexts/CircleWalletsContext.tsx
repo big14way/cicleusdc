@@ -4,13 +4,17 @@ import { createContext, useContext, useEffect, useState } from 'react'
 // Circle SDK types
 interface W3SSdkInstance {
   setAppSettings: (settings: { appId: string }) => void
-  setAuthentication: (auth: { userToken: string; encryptionKey: string }) => void
-  execute: (challengeId: string, callback: (error: Error | null, result: unknown) => void) => void
+  setAuthentication: (auth: {
+    userToken: string
+    encryptionKey: string
+  }) => void
+  execute: (
+    challengeId: string,
+    callback: (error: Error | null, result: unknown) => void
+  ) => void
 }
 
-interface W3SSdkConstructor {
-  new (): W3SSdkInstance
-}
+type W3SSdkConstructor = new () => W3SSdkInstance
 
 // Optional import for Circle SDK - will be undefined if not available
 let W3SSdk: W3SSdkConstructor | null = null
@@ -103,7 +107,11 @@ export const CircleWalletsProvider = ({
       // Circle Programmable Wallets SDK initialized
     } catch (error) {
       // Failed to initialize Circle SDK
-      throw new Error(`Failed to initialize Circle SDK: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      throw new Error(
+        `Failed to initialize Circle SDK: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`
+      )
     }
   }, [])
 
@@ -139,7 +147,11 @@ export const CircleWalletsProvider = ({
       // Note: In a real implementation, you'd authenticate the user first
       // and receive actual tokens from your backend
     } catch (error) {
-      throw new Error(`Failed to connect Circle Wallets: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      throw new Error(
+        `Failed to connect Circle Wallets: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`
+      )
     } finally {
       setIsConnecting(false)
     }
@@ -181,7 +193,11 @@ export const CircleWalletsProvider = ({
       await Promise.resolve()
       setIsInitialized(true)
     } catch (error) {
-      throw new Error(`Failed to initialize user: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      throw new Error(
+        `Failed to initialize user: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`
+      )
     }
   }
 
@@ -199,7 +215,11 @@ export const CircleWalletsProvider = ({
       await Promise.resolve()
       setHasPinSet(true)
     } catch (error) {
-      throw new Error(`Failed to set PIN code: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      throw new Error(
+        `Failed to set PIN code: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`
+      )
     }
   }
 
@@ -230,7 +250,11 @@ export const CircleWalletsProvider = ({
 
       setWallets([...wallets, mockWallet])
     } catch (error) {
-      throw new Error(`Failed to create wallet: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      throw new Error(
+        `Failed to create wallet: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`
+      )
     }
   }
 

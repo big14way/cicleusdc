@@ -1,214 +1,382 @@
+import type React from 'react'
 import { useState } from 'react'
-
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
-import { Alert, Box, Button, Chip, Typography } from '@mui/material'
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Typography,
+  Box,
+  Chip,
+  Alert,
+  Popover,
+  Card,
+  CardContent,
+  Avatar,
+  Divider,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material'
+import {
+  AccountBalanceWallet,
+  CheckCircle,
+  Error as ErrorIcon,
+  CreditCard,
+  Security,
+  TrendingUp,
+  Close as CloseIcon,
+} from '@mui/icons-material'
 import { useWeb3React } from '@web3-react/core'
+import { injected } from '../Wallet/Connectors'
 
-import ConnectWalletDialog from 'components/ConnectWallet/ConnectWalletDialog'
-import { useEagerConnect } from 'hooks/useEagerConnect'
-import { getAddressAbbreviation } from 'utils'
+const ConnectWallet: React.FC = () => {
+  const { account, activate, deactivate, active, error } = useWeb3React()
+  const [loading, setLoading] = useState(false)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
-import type { Web3Provider } from '@ethersproject/providers'
+  const handleConnect = async () => {
+    if (active) {
+      // Show wallet info popover
+      return
+    }
 
-const ConnectWallet = (): JSX.Element => {
-  const { account, active, activate, library } = useWeb3React<Web3Provider>()
+    try {
+      setLoading(true)
+      await activate(injected)
+    } catch (err) {
+      console.error('Connection failed:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
 
-  const [openDialog, setOpenDialog] = useState(false)
+  const handleDisconnect = () => {
+    deactivate()
+    handleClosePopover()
+  }
 
-  // Eager connect for Web3React
-  useEagerConnect()
+  const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (active) {
+      setAnchorEl(event.currentTarget)
+    } else {
+      void handleConnect()
+    }
+  }
+
+  const handleClosePopover = () => {
+    setAnchorEl(null)
+  }
+
+  const open = Boolean(anchorEl)
+
+  const formatAddress = (address: string | null | undefined) => {
+    if (!address) return 'No Address'
+    return `${address.slice(0, 6)}...${address.slice(-4)}`
+  }
 
   return (
-    <Box
-      sx={{
-        maxWidth: 480,
-        mx: 'auto',
-        p: 3,
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        borderRadius: 3,
-        boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
-        color: 'white',
-      }}
-    >
-      {/* Header */}
-      <Box textAlign="center" mb={4}>
-        <AccountBalanceWalletIcon sx={{ fontSize: 48, mb: 2, opacity: 0.9 }} />
-        <Typography variant="h4" fontWeight="bold" mb={1}>
-          Connect Wallet
-        </Typography>
-        <Typography variant="body1" sx={{ opacity: 0.8 }}>
-          Connect your wallet to start trading USDC across chains
-        </Typography>
-      </Box>
+    <>
+      <Button
+        variant={active ? 'contained' : 'outlined'}
+        color="primary"
+        onClick={handleOpenPopover}
+        disabled={loading}
+        startIcon={<AccountBalanceWallet />}
+        sx={{
+          minWidth: '160px',
+          height: '44px',
+          borderRadius: '12px',
+          textTransform: 'none',
+          fontWeight: 700,
+          fontSize: '0.9rem',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          border: active ? 'none' : '2px solid #1976d2',
+          background: active
+            ? 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)'
+            : 'transparent',
+          color: active ? '#ffffff' : '#1976d2',
+          boxShadow: active ? '0 4px 12px rgba(25, 118, 210, 0.3)' : 'none',
+          '&:hover': {
+            transform: 'translateY(-2px)',
+            boxShadow: active
+              ? '0 6px 20px rgba(25, 118, 210, 0.4)'
+              : '0 4px 12px rgba(25, 118, 210, 0.2)',
+            background: active
+              ? 'linear-gradient(135deg, #1565c0 0%, #0d47a1 100%)'
+              : 'rgba(25, 118, 210, 0.08)',
+            borderColor: '#1565c0',
+          },
+          '&:active': {
+            transform: 'translateY(0px)',
+          },
+        }}
+      >
+        {loading
+          ? 'Connecting...'
+          : active && account
+          ? `${formatAddress(account)}`
+          : 'Connect Wallet'}
+      </Button>
 
-      {active && account ? (
-        /* Connected State */
-        <Box
-          sx={{
-            p: 3,
-            borderRadius: 2,
-            bgcolor: 'rgba(255,255,255,0.1)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255,255,255,0.2)',
-          }}
-        >
-          <Box display="flex" alignItems="center" gap={2} mb={3}>
-            <Box
-              sx={{
-                width: 12,
-                height: 12,
-                borderRadius: '50%',
-                bgcolor: '#4caf50',
-                boxShadow: '0 0 0 3px rgba(76,175,80,0.2)',
-              }}
-            />
-            <Typography variant="h6" fontWeight="bold">
-              Wallet Connected
-            </Typography>
-          </Box>
-
+      <Popover
+        open={open && active && Boolean(account)}
+        anchorEl={anchorEl}
+        onClose={handleClosePopover}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        PaperProps={{
+          elevation: 16,
+          sx: {
+            mt: 1,
+            borderRadius: 4,
+            minWidth: '320px',
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            boxShadow:
+              '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+            overflow: 'hidden',
+          },
+        }}
+      >
+        <Box sx={{ p: 0 }}>
+          {/* Header */}
           <Box
             sx={{
-              p: 2,
-              borderRadius: 1,
-              bgcolor: 'rgba(255,255,255,0.05)',
-              mb: 2,
-            }}
-          >
-            <Typography
-              variant="caption"
-              sx={{ opacity: 0.7, display: 'block' }}
-            >
-              ADDRESS
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{ fontFamily: 'monospace', fontWeight: 'bold' }}
-            >
-              {getAddressAbbreviation(account)}
-            </Typography>
-          </Box>
-
-          <Box
-            sx={{
-              p: 2,
-              borderRadius: 1,
-              bgcolor: 'rgba(255,255,255,0.05)',
-              mb: 3,
-            }}
-          >
-            <Typography
-              variant="caption"
-              sx={{ opacity: 0.7, display: 'block' }}
-            >
-              NETWORK
-            </Typography>
-            <Typography variant="body1" fontWeight="bold">
-              {library?.network?.name ?? 'Ethereum'}
-            </Typography>
-          </Box>
-
-          <Alert
-            severity="success"
-            sx={{
-              bgcolor: 'rgba(76,175,80,0.1)',
+              background: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
               color: 'white',
-              border: '1px solid rgba(76,175,80,0.3)',
-              '& .MuiAlert-icon': { color: '#4caf50' },
+              p: 3,
+              position: 'relative',
             }}
           >
-            Ready for USDC transfers! Your wallet is connected and ready to use.
-          </Alert>
-        </Box>
-      ) : (
-        /* Not Connected State */
-        <Box textAlign="center">
-          <Box
-            sx={{
-              p: 4,
-              borderRadius: 2,
-              bgcolor: 'rgba(255,255,255,0.1)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              mb: 3,
-            }}
-          >
-            <Typography variant="h6" mb={2} fontWeight="bold">
-              MetaMask Wallet
-            </Typography>
-            <Typography variant="body2" sx={{ opacity: 0.8, mb: 3 }}>
-              Connect your MetaMask wallet to access DeFi features and transfer
-              USDC across multiple blockchains
-            </Typography>
-
-            <Button
-              variant="contained"
-              size="large"
-              onClick={() => setOpenDialog(true)}
-              startIcon={<AccountBalanceWalletIcon />}
-              sx={{
-                bgcolor: 'rgba(255,255,255,0.9)',
-                color: '#333',
-                fontWeight: 'bold',
-                py: 1.5,
-                px: 4,
-                borderRadius: 2,
-                '&:hover': {
-                  bgcolor: 'white',
-                  transform: 'translateY(-1px)',
-                  boxShadow: '0 5px 15px rgba(0,0,0,0.2)',
-                },
-                transition: 'all 0.2s ease',
-              }}
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
             >
-              Connect MetaMask
-            </Button>
-          </Box>
-
-          <Box
-            sx={{
-              p: 2,
-              borderRadius: 2,
-              bgcolor: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.1)',
-            }}
-          >
-            <Typography
-              variant="caption"
-              sx={{ opacity: 0.7, display: 'block', mb: 1 }}
-            >
-              SUPPORTED FEATURES
-            </Typography>
-            <Box display="flex" gap={1} flexWrap="wrap" justifyContent="center">
-              <Chip
-                label="USDC Transfers"
+              <Box display="flex" alignItems="center">
+                <Avatar
+                  sx={{
+                    bgcolor: 'rgba(255, 255, 255, 0.2)',
+                    mr: 2,
+                    backdropFilter: 'blur(10px)',
+                  }}
+                >
+                  <AccountBalanceWallet sx={{ color: 'white' }} />
+                </Avatar>
+                <Box>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{ fontWeight: 700, mb: 0.5 }}
+                  >
+                    Wallet Connected
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      opacity: 0.9,
+                      fontFamily: 'monospace',
+                      fontSize: '0.85rem',
+                      background: 'rgba(255, 255, 255, 0.15)',
+                      px: 1.5,
+                      py: 0.5,
+                      borderRadius: 2,
+                      backdropFilter: 'blur(10px)',
+                    }}
+                  >
+                    {formatAddress(account)}
+                  </Typography>
+                </Box>
+              </Box>
+              <Button
                 size="small"
-                sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}
-              />
-              <Chip
-                label="Cross-Chain"
-                size="small"
-                sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}
-              />
-              <Chip
-                label="DeFi Ready"
-                size="small"
-                sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}
-              />
+                onClick={handleClosePopover}
+                sx={{
+                  color: 'white',
+                  minWidth: 'auto',
+                  p: 1,
+                  '&:hover': {
+                    background: 'rgba(255, 255, 255, 0.1)',
+                  },
+                }}
+              >
+                <CloseIcon fontSize="small" />
+              </Button>
             </Box>
           </Box>
-        </Box>
-      )}
 
-      <ConnectWalletDialog
-        open={openDialog}
-        handleClose={() => setOpenDialog(false)}
-        handleConnect={(connector) => {
-          void activate(connector)
-          setOpenDialog(false)
-        }}
-      />
-    </Box>
+          {/* Status Cards */}
+          <Box sx={{ p: 3 }}>
+            <List sx={{ p: 0 }}>
+              <ListItem sx={{ px: 0, pb: 2 }}>
+                <ListItemIcon>
+                  <Avatar sx={{ bgcolor: '#4caf50', width: 40, height: 40 }}>
+                    <CreditCard />
+                  </Avatar>
+                </ListItemIcon>
+                <ListItemText
+                  primary={
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <Typography
+                        variant="subtitle1"
+                        sx={{ fontWeight: 700, color: '#212529' }}
+                      >
+                        MetaMask Card
+                      </Typography>
+                      <Chip
+                        label="Active"
+                        color="success"
+                        size="small"
+                        sx={{
+                          fontWeight: 700,
+                          fontSize: '0.75rem',
+                          height: '22px',
+                        }}
+                      />
+                    </Box>
+                  }
+                  secondary={
+                    <Typography
+                      variant="body2"
+                      sx={{ color: '#6c757d', mt: 0.5 }}
+                    >
+                      Earning 1% USDC cashback on all purchases
+                    </Typography>
+                  }
+                />
+              </ListItem>
+
+              <Divider sx={{ my: 1 }} />
+
+              <ListItem sx={{ px: 0, py: 2 }}>
+                <ListItemIcon>
+                  <Avatar sx={{ bgcolor: '#ff9800', width: 40, height: 40 }}>
+                    <Security />
+                  </Avatar>
+                </ListItemIcon>
+                <ListItemText
+                  primary={
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <Typography
+                        variant="subtitle1"
+                        sx={{ fontWeight: 700, color: '#212529' }}
+                      >
+                        Smart Account
+                      </Typography>
+                      <Chip
+                        label="Ready"
+                        color="warning"
+                        size="small"
+                        sx={{
+                          fontWeight: 700,
+                          fontSize: '0.75rem',
+                          height: '22px',
+                        }}
+                      />
+                    </Box>
+                  }
+                  secondary={
+                    <Typography
+                      variant="body2"
+                      sx={{ color: '#6c757d', mt: 0.5 }}
+                    >
+                      DTK integration for gasless transactions
+                    </Typography>
+                  }
+                />
+              </ListItem>
+
+              <Divider sx={{ my: 1 }} />
+
+              <ListItem sx={{ px: 0, pt: 2 }}>
+                <ListItemIcon>
+                  <Avatar sx={{ bgcolor: '#2196f3', width: 40, height: 40 }}>
+                    <TrendingUp />
+                  </Avatar>
+                </ListItemIcon>
+                <ListItemText
+                  primary={
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <Typography
+                        variant="subtitle1"
+                        sx={{ fontWeight: 700, color: '#212529' }}
+                      >
+                        Cross-Chain Bridge
+                      </Typography>
+                      <Chip
+                        label="Live"
+                        color="info"
+                        size="small"
+                        sx={{
+                          fontWeight: 700,
+                          fontSize: '0.75rem',
+                          height: '22px',
+                        }}
+                      />
+                    </Box>
+                  }
+                  secondary={
+                    <Typography
+                      variant="body2"
+                      sx={{ color: '#6c757d', mt: 0.5 }}
+                    >
+                      Circle CCTP V2 for instant USDC transfers
+                    </Typography>
+                  }
+                />
+              </ListItem>
+            </List>
+
+            {/* Action Buttons */}
+            <Box sx={{ mt: 3, pt: 2, borderTop: '1px solid #e9ecef' }}>
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={handleDisconnect}
+                fullWidth
+                sx={{
+                  borderRadius: 3,
+                  fontWeight: 700,
+                  textTransform: 'none',
+                  py: 1.5,
+                  border: '2px solid #f44336',
+                  color: '#f44336',
+                  '&:hover': {
+                    background: 'rgba(244, 67, 54, 0.08)',
+                    borderColor: '#d32f2f',
+                  },
+                }}
+              >
+                Disconnect Wallet
+              </Button>
+            </Box>
+          </Box>
+
+          {error && (
+            <Alert
+              severity="error"
+              sx={{
+                m: 2,
+                mt: 0,
+                borderRadius: 2,
+                fontWeight: 600,
+              }}
+            >
+              Connection failed. Please try again.
+            </Alert>
+          )}
+        </Box>
+      </Popover>
+    </>
   )
 }
 

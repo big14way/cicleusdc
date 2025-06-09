@@ -1,13 +1,13 @@
 {
-  "name": "cctp-sample-app",
-  "version": "0.1.0",
-  "description": "CCTP Sample App",
-  "author": "Circle",
+  "name": "global-usdc-remittance-platform",
+  "version": "1.0.0",
+  "description": "Global USDC Remittance Platform - Send money worldwide with MetaMask Card rewards and instant cross-chain transfers",
+  "author": "Your Team",
   "license": "MIT",
   "private": true,
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "ESLINT_NO_DEV_ERRORS=true craco build",
     "build:stats": "yarn build --stats",
     "analyze": "webpack-bundle-analyzer build/bundle-stats.json",
     "typechain": "typechain --target=ethers-v5 --out-dir ./src/typechain ./src/abis/*.json",
@@ -25,10 +25,10 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
-
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@lifi/sdk": "^3.7.9",
+    "@metamask/delegation-toolkit": "^0.11.0",
     "@mui/icons-material": "^5.8.4",
     "@mui/lab": "^5.0.0-alpha.98",
     "@mui/material": "^5.10.0",

@@ -75,19 +75,23 @@ const SendForm = ({ handleNext, handleUpdateForm, formInputs }: Props) => {
   const balance = useTokenBalance(USDC_ADDRESS, account ?? '')
 
   const updateFormIsValid = useCallback(() => {
+    // Validate Ethereum address format (basic check)
+    const isValidAddress = address.length === 42 && address.startsWith('0x')
+    
     const isValid =
       source !== '' &&
       target !== '' &&
       source !== target &&
       address !== '' &&
-      address === account &&
+      isValidAddress &&
       amount !== '' &&
       !isNaN(+amount) &&
       +amount > 0 &&
       +amount <= walletUSDCBalance &&
-      CHAIN_TO_CHAIN_ID[source] === chainId
+      Boolean(active) &&
+      Boolean(account)
     setIsFormValid(isValid)
-  }, [source, target, address, account, amount, walletUSDCBalance, chainId])
+  }, [source, target, address, account, amount, walletUSDCBalance, active])
 
   useEffect(() => {
     if (account && active) {
@@ -113,13 +117,16 @@ const SendForm = ({ handleNext, handleUpdateForm, formInputs }: Props) => {
   )
 
   const getAddressHelperText = useMemo(() => {
-    if (address !== '' && (!account || !active)) {
-      return 'Please connect your wallet and check your selected network'
+    if (!account || !active) {
+      return 'Please connect your wallet first'
     }
-    if (address !== '' && address !== account) {
-      return "Destination address doesn't match active wallet address"
+    if (address !== '' && (address.length !== 42 || !address.startsWith('0x'))) {
+      return 'Please enter a valid Ethereum address (0x...)'
     }
-    return ' '
+    if (address === account) {
+      return 'Sending to your own wallet address'
+    }
+    return 'Enter the recipient\'s wallet address'
   }, [address, account, active])
 
   const getAmountHelperText = useMemo(() => {
@@ -216,7 +223,7 @@ const SendForm = ({ handleNext, handleUpdateForm, formInputs }: Props) => {
           label="Destination Address"
           variant="outlined"
           value={address}
-          error={address !== '' && address !== account}
+          error={address !== '' && (address.length !== 42 || !address.startsWith('0x'))}
           helperText={getAddressHelperText}
           onChange={(event) =>
             handleUpdateForm((state) => ({
@@ -279,10 +286,31 @@ const SendForm = ({ handleNext, handleUpdateForm, formInputs }: Props) => {
       <Button
         className="mt-12"
         type="submit"
+        variant="contained"
         size="large"
         disabled={!isFormValid}
+        sx={{
+          background: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
+          color: 'white',
+          fontWeight: 700,
+          fontSize: '1.1rem',
+          padding: '16px 32px',
+          borderRadius: '12px',
+          textTransform: 'none',
+          boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)',
+          '&:hover': {
+            background: 'linear-gradient(135deg, #1565c0 0%, #0d47a1 100%)',
+            boxShadow: '0 6px 20px rgba(25, 118, 210, 0.4)',
+            transform: 'translateY(-2px)',
+          },
+          '&:disabled': {
+            background: '#e0e0e0',
+            color: '#9e9e9e',
+            boxShadow: 'none',
+          },
+        }}
       >
-        NEXT
+        💸 Send USDC Remittance
       </Button>
     </form>
   )

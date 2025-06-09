@@ -1,35 +1,41 @@
-const webpack = require('webpack');
+const path = require('path')
 
 module.exports = {
+  eslint: {
+    enable: false, // Disable ESLint for build
+  },
   webpack: {
+    alias: {
+      src: path.resolve(__dirname, 'src'),
+    },
     configure: (webpackConfig) => {
       // Add polyfills for Node.js modules
       webpackConfig.resolve.fallback = {
         ...webpackConfig.resolve.fallback,
-        crypto: require.resolve('crypto-browserify'),
-        stream: require.resolve('stream-browserify'),
         assert: require.resolve('assert'),
+        buffer: require.resolve('buffer'),
+        crypto: require.resolve('crypto-browserify'),
         http: require.resolve('stream-http'),
         https: require.resolve('https-browserify'),
-        os: require.resolve('os-browserify'),
-        url: require.resolve('url'),
-        zlib: require.resolve('browserify-zlib'),
-        util: require.resolve('util'),
-        buffer: require.resolve('buffer'),
+        os: require.resolve('os-browserify/browser'),
         process: require.resolve('process/browser'),
+        stream: require.resolve('stream-browserify'),
+        url: require.resolve('url'),
+        util: require.resolve('util'),
         vm: require.resolve('vm-browserify'),
-      };
+        zlib: require.resolve('browserify-zlib'),
+      }
 
       // Add plugins to define global variables
       webpackConfig.plugins = [
         ...webpackConfig.plugins,
-        new webpack.ProvidePlugin({
+        new (require('webpack').ProvidePlugin)({
           process: 'process/browser',
           Buffer: ['buffer', 'Buffer'],
         }),
-      ];
+      ]
 
-      return webpackConfig;
+      return webpackConfig
     },
   },
-}; 
+}

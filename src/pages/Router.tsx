@@ -1,10 +1,10 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Box, Typography } from '@mui/material'
 
 import AppLayout from 'layouts/AppLayout'
 
 import EnhancedTransfer from './Enhanced/EnhancedTransfer'
 import Redeem from './Redeem/Redeem'
-import Send from './Send/Send'
 import Transactions from './Transactions/Transactions'
 
 export interface RouteConfig {
@@ -17,14 +17,8 @@ export interface RouteConfig {
 export const routes: RouteConfig[] = [
   {
     path: '/',
-    label: 'Enhanced Transfer',
+    label: 'Send Money',
     component: EnhancedTransfer,
-    nav: true,
-  },
-  {
-    path: '/original',
-    label: 'Original Transfer',
-    component: Send,
     nav: true,
   },
   {
@@ -40,6 +34,26 @@ export const routes: RouteConfig[] = [
     nav: false,
   },
 ]
+
+// Simple test component
+const TestComponent = () => (
+  <Box
+    sx={{
+      height: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+    }}
+  >
+    <Box sx={{ textAlign: 'center', color: 'white' }}>
+      <Typography variant="h2" gutterBottom>
+        🌍 Global USDC Platform
+      </Typography>
+      <Typography variant="h5">System is loading...</Typography>
+    </Box>
+  </Box>
+)
 
 function AppRoutes() {
   return (
