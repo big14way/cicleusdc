@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { Box, Typography } from '@mui/material'
 
 import AppLayout from 'layouts/AppLayout'
+import Nav from 'components/Nav/Nav'
 
 import EnhancedTransfer from './Enhanced/EnhancedTransfer'
 import Redeem from './Redeem/Redeem'
@@ -12,6 +13,7 @@ export interface RouteConfig {
   label: string
   component: React.ComponentType
   nav: boolean
+  fullScreen?: boolean // Add flag for full-screen layout
 }
 
 export const routes: RouteConfig[] = [
@@ -20,6 +22,7 @@ export const routes: RouteConfig[] = [
     label: 'Send Money',
     component: EnhancedTransfer,
     nav: true,
+    fullScreen: true, // Enable full-screen layout
   },
   {
     path: '/redeem',
@@ -55,23 +58,45 @@ const TestComponent = () => (
   </Box>
 )
 
-function AppRoutes() {
-  return (
-    <Routes>
-      {routes.map((route) => {
-        const Page = route.component
-        return <Route key={route.path} path={route.path} element={<Page />} />
-      })}
-    </Routes>
-  )
-}
-
 function Router() {
   return (
     <BrowserRouter>
-      <AppLayout>
-        <AppRoutes />
-      </AppLayout>
+      <Routes>
+        {routes.map((route) => {
+          const Page = route.component
+          
+          // For full-screen routes, only add Nav without AppLayout padding
+          if (route.fullScreen) {
+            return (
+              <Route 
+                key={route.path} 
+                path={route.path} 
+                element={
+                  <div className="flex min-h-screen flex-col">
+                    <Nav />
+                    <main className="flex-1">
+                      <Page />
+                    </main>
+                  </div>
+                } 
+              />
+            )
+          }
+          
+          // For regular routes, use normal AppLayout
+          return (
+            <Route 
+              key={route.path} 
+              path={route.path} 
+              element={
+                <AppLayout>
+                  <Page />
+                </AppLayout>
+              } 
+            />
+          )
+        })}
+      </Routes>
     </BrowserRouter>
   )
 }

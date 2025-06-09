@@ -174,53 +174,99 @@ const SendForm = ({ handleNext, handleUpdateForm, formInputs }: Props) => {
   }
 
   return (
-    <form className="flex flex-col" onSubmit={handleSubmit}>
-      <NetworkAlert className="-mt-20 mb-8" chain={formInputs.source} />
+    <div className="flex flex-col">
+      {/* Modern USDC Balance Card */}
+      {account && active && (
+        <div className="mb-4 p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 shadow-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
+                <span className="text-white text-lg">💰</span>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-blue-600 uppercase tracking-wide">Available Balance</p>
+                <p className="text-2xl font-bold text-blue-900">{walletUSDCBalance.toLocaleString()} USDC</p>
+                <p className="text-xs text-blue-500">≈ ${(walletUSDCBalance * 1).toLocaleString()} USD</p>
+              </div>
+            </div>
+            <button
+              onClick={handleAddMax}
+              disabled={walletUSDCBalance === 0}
+              className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all transform hover:scale-105 shadow-md disabled:opacity-50"
+            >
+              Use Max
+            </button>
+          </div>
+        </div>
+      )}
 
-      <div className="-mx-6 flex items-center justify-between">
-        <FormControl className="mx-6" fullWidth>
-          <InputLabel id="source">Source</InputLabel>
-          <Select
-            id="source"
-            label="Source"
-            error={
-              account !== null &&
-              active &&
-              CHAIN_TO_CHAIN_ID[source] !== chainId
-            }
-            value={source}
-            onChange={(event) => handleSourceChange(event.target.value)}
-          >
-            {CHAIN_SELECT_ITEMS.map((chain) => renderChainMenuItem(chain))}
-          </Select>
-        </FormControl>
+      <form className="flex flex-col" onSubmit={handleSubmit}>
+        <NetworkAlert className="-mt-8 mb-4" chain={formInputs.source} />
 
-        <EastIcon className="text-gumdrop-200" sx={{ fontSize: 40 }} />
+              <div className="-mx-4 flex items-center justify-between mb-2">
+          <FormControl className="mx-4" fullWidth>
+            <InputLabel id="source" sx={{ color: '#1976d2', fontWeight: 600 }}>Source Chain</InputLabel>
+            <Select
+              id="source"
+              label="Source Chain"
+              error={
+                account !== null &&
+                active &&
+                CHAIN_TO_CHAIN_ID[source] !== chainId
+              }
+              value={source}
+              onChange={(event) => handleSourceChange(event.target.value)}
+              sx={{
+                borderRadius: 2,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  '&:hover fieldset': {
+                    borderColor: '#1976d2',
+                  },
+                },
+              }}
+            >
+              {CHAIN_SELECT_ITEMS.map((chain) => renderChainMenuItem(chain))}
+            </Select>
+          </FormControl>
 
-        <FormControl className="mx-6" fullWidth>
-          <InputLabel id="target">Destination</InputLabel>
-          <Select
-            id="target"
-            label="Destination"
-            value={target}
-            onChange={(event) =>
-              handleUpdateForm((state) => ({
-                ...state,
-                target: event.target.value,
-              }))
-            }
-          >
-            {CHAIN_SELECT_ITEMS.map((chain) =>
-              renderChainMenuItem(chain, source)
-            )}
-          </Select>
-        </FormControl>
-      </div>
+          <div className="mx-2 bg-gradient-to-r from-blue-400 to-purple-500 p-2 rounded-full">
+            <EastIcon sx={{ fontSize: 24, color: 'white' }} />
+          </div>
 
-      <FormControl className="mt-12" fullWidth>
+          <FormControl className="mx-4" fullWidth>
+            <InputLabel id="target" sx={{ color: '#1976d2', fontWeight: 600 }}>Destination Chain</InputLabel>
+            <Select
+              id="target"
+              label="Destination Chain"
+              value={target}
+              onChange={(event) =>
+                handleUpdateForm((state) => ({
+                  ...state,
+                  target: event.target.value,
+                }))
+              }
+              sx={{
+                borderRadius: 2,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  '&:hover fieldset': {
+                    borderColor: '#1976d2',
+                  },
+                },
+              }}
+            >
+              {CHAIN_SELECT_ITEMS.map((chain) =>
+                renderChainMenuItem(chain, source)
+              )}
+            </Select>
+          </FormControl>
+        </div>
+
+            <FormControl className="mt-6" fullWidth>
         <TextField
           id="address"
-          label="Destination Address"
+          label="Recipient Wallet Address"
           variant="outlined"
           value={address}
           error={address !== '' && (address.length !== 42 || !address.startsWith('0x'))}
@@ -231,16 +277,42 @@ const SendForm = ({ handleNext, handleUpdateForm, formInputs }: Props) => {
               address: event.target.value,
             }))
           }
-          InputLabelProps={{ shrink: true }}
+          InputLabelProps={{ 
+            shrink: true,
+            sx: { color: '#1976d2', fontWeight: 600 }
+          }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: 2,
+              '&:hover fieldset': {
+                borderColor: '#1976d2',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: '#1976d2',
+              },
+            },
+          }}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
                 <Button
-                  color="secondary"
+                  variant="outlined"
+                  size="small"
                   onClick={handleCopyFromWallet}
                   disabled={!account || !active}
+                  sx={{
+                    borderColor: '#1976d2',
+                    color: '#1976d2',
+                    fontSize: '0.75rem',
+                    px: 2,
+                    py: 0.5,
+                    '&:hover': {
+                      borderColor: '#1565c0',
+                      backgroundColor: 'rgba(25, 118, 210, 0.1)',
+                    },
+                  }}
                 >
-                  COPY FROM WALLET
+                  Copy Wallet
                 </Button>
               </InputAdornment>
             ),
@@ -248,12 +320,13 @@ const SendForm = ({ handleNext, handleUpdateForm, formInputs }: Props) => {
         />
       </FormControl>
 
-      <FormControl className="mt-6" fullWidth>
+      <FormControl className="mt-4" fullWidth>
         <TextField
           id="amount"
-          label="Amount"
+          label="USDC Amount"
           variant="outlined"
           type="number"
+          placeholder="0.00"
           error={
             amount !== '' &&
             (isNaN(+amount) || +amount <= 0 || +amount > walletUSDCBalance)
@@ -266,17 +339,46 @@ const SendForm = ({ handleNext, handleUpdateForm, formInputs }: Props) => {
               amount: event.target.value,
             }))
           }
-          InputLabelProps={{ shrink: true }}
+          InputLabelProps={{ 
+            shrink: true,
+            sx: { color: '#1976d2', fontWeight: 600 }
+          }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: 2,
+              '&:hover fieldset': {
+                borderColor: '#1976d2',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: '#1976d2',
+              },
+            },
+          }}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <Button
-                  color="secondary"
-                  onClick={handleAddMax}
-                  disabled={walletUSDCBalance === 0}
-                >
-                  ADD MAX
-                </Button>
+                <div className="flex items-center space-x-2">
+                  <span className="text-gray-500 font-medium">USDC</span>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={handleAddMax}
+                    disabled={walletUSDCBalance === 0}
+                    sx={{
+                      borderColor: '#1976d2',
+                      color: '#1976d2',
+                      fontSize: '0.75rem',
+                      px: 2,
+                      py: 0.5,
+                      '&:hover': {
+                        borderColor: '#1565c0',
+                        backgroundColor: 'rgba(25, 118, 210, 0.1)',
+                      },
+                    }}
+                  >
+                    Max
+                  </Button>
+                </div>
               </InputAdornment>
             ),
           }}
@@ -284,7 +386,7 @@ const SendForm = ({ handleNext, handleUpdateForm, formInputs }: Props) => {
       </FormControl>
 
       <Button
-        className="mt-12"
+        className="mt-6"
         type="submit"
         variant="contained"
         size="large"
@@ -312,7 +414,8 @@ const SendForm = ({ handleNext, handleUpdateForm, formInputs }: Props) => {
       >
         💸 Send USDC Remittance
       </Button>
-    </form>
+      </form>
+    </div>
   )
 }
 

@@ -37,11 +37,23 @@ function TabPanel(props: TabPanelProps) {
       id={`enhanced-tabpanel-${index}`}
       aria-labelledby={`enhanced-tab-${index}`}
       {...other}
-      style={{ height: '100%', overflow: 'auto' }}
+      style={{ 
+        height: '100%', 
+        overflow: 'auto',
+        display: 'flex',
+        flexDirection: 'column'
+      }}
     >
       {value === index && (
         <Slide direction="up" in={value === index} mountOnEnter unmountOnExit>
-          <Box sx={{ height: '100%', p: { xs: 2, md: 3 } }}>{children}</Box>
+          <Box sx={{ 
+            flex: 1, 
+            p: { xs: 1, md: 2 },
+            minHeight: 'min-content',
+            width: '100%'
+          }}>
+            {children}
+          </Box>
         </Slide>
       )}
     </div>
@@ -67,7 +79,7 @@ const EnhancedTransfer: React.FC = () => {
   return (
     <Box
       sx={{
-        height: '100vh',
+        height: 'calc(100vh - 96px)', // Account for nav height (~96px)
         display: 'flex',
         flexDirection: 'column',
         background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
@@ -78,8 +90,8 @@ const EnhancedTransfer: React.FC = () => {
       {/* Header */}
       <Box
         sx={{
-          zIndex: 2,
-          py: { xs: 2, md: 3 },
+          flexShrink: 0,
+          py: { xs: 1.5, md: 2 },
           px: { xs: 2, md: 4 },
           textAlign: 'center',
           background: 'rgba(0, 0, 0, 0.2)',
@@ -88,7 +100,7 @@ const EnhancedTransfer: React.FC = () => {
         }}
       >
         <Typography
-          variant={isMobile ? 'h4' : 'h3'}
+          variant={isMobile ? 'h5' : 'h4'}
           component="h1"
           gutterBottom
           fontWeight="bold"
@@ -101,10 +113,10 @@ const EnhancedTransfer: React.FC = () => {
           🌍 Global USDC Remittance Platform
         </Typography>
         <Typography
-          variant={isMobile ? 'body1' : 'h6'}
+          variant={isMobile ? 'body2' : 'body1'}
           sx={{
             color: 'rgba(255, 255, 255, 0.95)',
-            mb: 2,
+            mb: 1.5,
             fontWeight: 500,
           }}
         >
@@ -123,7 +135,7 @@ const EnhancedTransfer: React.FC = () => {
               background: 'linear-gradient(135deg, #4caf50 0%, #45a049 100%)',
               color: 'white',
               border: '1px solid rgba(255, 255, 255, 0.2)',
-              fontSize: '0.85rem',
+              fontSize: '0.75rem',
             }}
           />
           <Chip
@@ -134,7 +146,7 @@ const EnhancedTransfer: React.FC = () => {
               background: 'linear-gradient(135deg, #ff9800 0%, #f57c00 100%)',
               color: 'white',
               border: '1px solid rgba(255, 255, 255, 0.2)',
-              fontSize: '0.85rem',
+              fontSize: '0.75rem',
             }}
           />
         </Box>
@@ -142,14 +154,14 @@ const EnhancedTransfer: React.FC = () => {
 
       {/* Main Content Area */}
       <Box
-        sx={{ flex: 1, display: 'flex', flexDirection: 'column', zIndex: 2 }}
+        sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}
       >
         <Paper
           elevation={12}
           sx={{
             flex: 1,
             mx: { xs: 1, md: 2 },
-            mb: { xs: 1, md: 2 },
+            my: { xs: 0.5, md: 1 },
             borderRadius: 4,
             overflow: 'hidden',
             background: 'rgba(255, 255, 255, 0.98)',
@@ -159,10 +171,12 @@ const EnhancedTransfer: React.FC = () => {
               '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
             display: 'flex',
             flexDirection: 'column',
+            minHeight: 0,
           }}
         >
           <Box
             sx={{
+              flexShrink: 0,
               borderBottom: '1px solid rgba(255, 255, 255, 0.3)',
               background: 'rgba(255, 255, 255, 0.2)',
               backdropFilter: 'blur(5px)',
@@ -174,13 +188,13 @@ const EnhancedTransfer: React.FC = () => {
               variant={isMobile ? 'scrollable' : 'fullWidth'}
               scrollButtons="auto"
               sx={{
-                minHeight: isMobile ? 56 : 64,
+                minHeight: isMobile ? 48 : 56,
                 '& .MuiTab-root': {
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   fontWeight: 700,
                   textTransform: 'none',
-                  fontSize: isMobile ? '0.85rem' : '0.95rem',
-                  minHeight: isMobile ? 56 : 64,
+                  fontSize: isMobile ? '0.75rem' : '0.85rem',
+                  minHeight: isMobile ? 48 : 56,
                   color: '#424242',
                   letterSpacing: '0.02em',
                   '&:hover': {
@@ -198,8 +212,8 @@ const EnhancedTransfer: React.FC = () => {
                   },
                 },
                 '& .MuiTabs-indicator': {
-                  height: 4,
-                  borderRadius: '4px 4px 0 0',
+                  height: 3,
+                  borderRadius: '3px 3px 0 0',
                   background:
                     'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
                   boxShadow: '0 2px 4px rgba(25, 118, 210, 0.3)',
@@ -219,9 +233,11 @@ const EnhancedTransfer: React.FC = () => {
           <Box
             sx={{
               flex: 1,
-              overflow: 'hidden',
+              overflow: 'auto',
               position: 'relative',
               background: 'rgba(255, 255, 255, 0.95)',
+              minHeight: 0,
+              maxHeight: 'calc(100vh - 250px)', // Ensure content doesn't exceed viewport
             }}
           >
             <TabPanel value={value} index={0}>
@@ -237,55 +253,35 @@ const EnhancedTransfer: React.FC = () => {
             </TabPanel>
 
             <TabPanel value={value} index={3}>
-              <Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                 <Typography
-                  variant="h4"
-                  gutterBottom
+                  variant="h5"
                   sx={{ color: '#1976d2', fontWeight: 'bold', mb: 1 }}
                 >
-                  Send USDC Remittance
+                  💸 Send USDC Remittance
                 </Typography>
-                <Typography
-                  variant="body1"
-                  color="#666"
-                  mb={3}
-                  sx={{ lineHeight: 1.6 }}
-                >
-                  Send USDC globally using Circle's CCTP for native cross-chain
-                  transfers. Earn MetaMask Card rewards on everyday spending.
-                </Typography>
-
+                
                 <Alert
                   severity="success"
                   sx={{
-                    mb: 3,
-                    background:
-                      'linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(69, 160, 73, 0.1) 100%)',
-                    border: '1px solid rgba(76, 175, 80, 0.4)',
-                    borderRadius: 3,
+                    mb: 2,
+                    py: 1,
+                    background: 'rgba(76, 175, 80, 0.1)',
+                    border: '1px solid rgba(76, 175, 80, 0.3)',
+                    borderRadius: 2,
                     '& .MuiAlert-icon': {
                       color: '#4caf50',
                     },
                   }}
                 >
-                  <Typography
-                    variant="subtitle1"
-                    sx={{ fontWeight: 700, mb: 1, color: '#2e7d32' }}
-                  >
-                    💳 MetaMask Card Benefits Active
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{ color: '#388e3c', lineHeight: 1.5 }}
-                  >
-                    • Earn 1% USDC cashback on all card purchases
-                    <br />
-                    • Build onchain credit history for DeFi access
-                    <br />• Spend globally with Mastercard acceptance
+                  <Typography variant="body2" sx={{ fontWeight: 600, color: '#2e7d32' }}>
+                    💳 MetaMask Card: 1% USDC cashback • Global Mastercard acceptance
                   </Typography>
                 </Alert>
 
-                <Send />
+                <Box sx={{ flex: 1 }}>
+                  <Send />
+                </Box>
               </Box>
             </TabPanel>
 
