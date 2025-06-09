@@ -7,18 +7,21 @@ Built on top of Circle's CCTP sample app, this application demonstrates enterpri
 ## 🌟 Key Features
 
 ### Core Payment Infrastructure
+
 - 🔄 **Circle CCTP Integration**: Native burn-and-mint USDC transfers across chains
 - 🌉 **LI.FI SDK**: Professional bridge aggregation with 20+ protocol support
 - 💰 **USDC Optimization**: Focused on stablecoin transfers with optimal routing
 - ⚡ **Cross-Chain Messaging**: Seamless communication between blockchain networks
 
 ### User Experience
+
 - 👛 **MetaMask SDK**: Enhanced wallet integration with improved UX
 - 💼 **Treasury Dashboard**: Real-time balance monitoring across multiple chains
 - 📊 **Transaction History**: Comprehensive tracking and status updates
 - 🎨 **Modern UI**: Clean Material-UI design with responsive layouts
 
 ### Technical Excellence
+
 - 🛡️ **Production Ready**: Comprehensive error handling and validation
 - 🔧 **Developer Tools**: Built-in testing interfaces for SDK integration
 - 📱 **Mobile Responsive**: Optimized for desktop and mobile experiences
@@ -27,17 +30,20 @@ Built on top of Circle's CCTP sample app, this application demonstrates enterpri
 ## 🛠️ Technical Stack
 
 ### Frontend Framework
+
 - **React 18** with TypeScript
 - **Material-UI (MUI)** for component library
 - **React Query** for state management
 
 ### Blockchain Integration
+
 - **Circle CCTP SDK** for cross-chain USDC transfers
 - **LI.FI SDK** for bridge aggregation
 - **MetaMask SDK** for wallet connectivity
 - **Ethers.js** for blockchain interactions
 
 ### Supported Networks
+
 - Ethereum Mainnet
 - Polygon
 - Arbitrum
@@ -47,6 +53,7 @@ Built on top of Circle's CCTP sample app, this application demonstrates enterpri
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js 16+ and npm/yarn
 - MetaMask or compatible Web3 wallet
 - Basic understanding of Web3 development
@@ -91,6 +98,7 @@ REACT_APP_CIRCLE_API_KEY=your_circle_api_key
 ### Advanced Features
 
 #### Treasury Management
+
 ```bash
 # Access treasury dashboard
 Navigate to /treasury
@@ -99,6 +107,7 @@ Monitor pending transactions
 ```
 
 #### LI.FI Integration Testing
+
 ```bash
 # Test SDK integration
 Click "Test LI.FI SDK APIs"
@@ -107,6 +116,7 @@ Monitor real-time quote generation
 ```
 
 #### Bridge Comparison
+
 ```bash
 # Compare transfer options
 View estimated times and costs
@@ -117,6 +127,7 @@ Choose optimal route for your needs
 ## 🏗️ Architecture
 
 ### Component Structure
+
 ```
 src/
 ├── components/
@@ -132,6 +143,7 @@ src/
 ### Key Integrations
 
 #### Circle CCTP Integration
+
 ```typescript
 // USDC burn and mint across chains
 integrator: 'multichain-usdc-payment-system',
@@ -139,6 +151,7 @@ chains: ['ethereum', 'polygon', 'arbitrum', 'optimism', 'avalanche']
 ```
 
 #### LI.FI SDK Configuration
+
 ```typescript
 createConfig({
   integrator: 'multichain-usdc-payment-system',
@@ -146,14 +159,15 @@ createConfig({
   rpcUrls: {
     [ChainId.ETH]: ['https://rpc.ankr.com/eth'],
     [ChainId.POL]: ['https://rpc.ankr.com/polygon'],
-    [ChainId.ARB]: ['https://rpc.ankr.com/arbitrum']
-  }
+    [ChainId.ARB]: ['https://rpc.ankr.com/arbitrum'],
+  },
 })
 ```
 
 ## 🧪 Testing
 
 ### Development Testing
+
 ```bash
 # Run tests
 npm test
@@ -177,6 +191,7 @@ npm run test:integration
 ## 🔧 Configuration
 
 ### Network Settings
+
 The application supports multiple blockchain networks with automatic switching:
 
 - **Ethereum**: Native USDC and CCTP support
@@ -186,6 +201,7 @@ The application supports multiple blockchain networks with automatic switching:
 - **Avalanche**: High-throughput subnet support
 
 ### Bridge Configuration
+
 Multiple bridge options available:
 
 - **Circle CCTP**: Native burn-and-mint (recommended for USDC)
@@ -211,6 +227,7 @@ We welcome contributions! Please see our contributing guidelines:
 5. Submit a pull request
 
 ### Development Guidelines
+
 - Follow TypeScript best practices
 - Use Material-UI components
 - Write comprehensive tests
