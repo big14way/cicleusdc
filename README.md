@@ -1,6 +1,6 @@
 # 🌍 Global USDC Remittance Platform
 
-**Winner of [Hackathon Name] - Real World Prototype**
+**Real World Prototype**
 
 A comprehensive Web3 remittance platform that combines **MetaMask Card rewards**, **Circle CCTP V2**, **LI.FI cross-chain bridging**, and **MetaMask Delegation Toolkit** to create the world's first integrated crypto-to-card spending and remittance ecosystem.
 
